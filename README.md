@@ -1,12 +1,9 @@
-# GUN Chat Dapp Demo
+# Dechat
 
-A decentralized chat app built with [GUN](https://gun.eco/). 
+A peer-to-peer decentralized chat app built with Svelte and Gun.js, empowering users to communicate securely without relying on centralized servers. <br>
 
-- Try the [Live Demo](https://gun-chat-dapp.web.app/)
-- Watch the [Chat Dapp Video](https://youtu.be/J5x3OMXjgMc)
+Steps : <br>
 
-```
-git clone <this-repo>
-npm install
-npm run dev
-```
+1. Clone the repo <br>
+2. npm install <br>
+3. npm run dev <br>
