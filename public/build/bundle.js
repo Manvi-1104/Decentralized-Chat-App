@@ -4621,6 +4621,90 @@ var app = (function () {
 
     const file$3 = "src\\ChatMessage.svelte";
 
+    // (18:6) {:else}
+    function create_else_block$2(ctx) {
+    	let t_value = /*message*/ ctx[0].what + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text(t_value);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*message*/ 1 && t_value !== (t_value = /*message*/ ctx[0].what + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$2.name,
+    		type: "else",
+    		source: "(18:6) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (16:6) {#if messageClass === "received"}
+    function create_if_block$2(ctx) {
+    	let span;
+    	let strong;
+    	let t0_value = /*message*/ ctx[0].who + "";
+    	let t0;
+    	let t1;
+    	let t2;
+    	let t3_value = /*message*/ ctx[0].what + "";
+    	let t3;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			strong = element("strong");
+    			t0 = text(t0_value);
+    			t1 = text(":");
+    			t2 = space();
+    			t3 = text(t3_value);
+    			add_location(strong, file$3, 16, 32, 454);
+    			attr_dev(span, "class", "sender-name");
+    			add_location(span, file$3, 16, 6, 428);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, strong);
+    			append_dev(strong, t0);
+    			append_dev(strong, t1);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, t3, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*message*/ 1 && t0_value !== (t0_value = /*message*/ ctx[0].who + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*message*/ 1 && t3_value !== (t3_value = /*message*/ ctx[0].what + "")) set_data_dev(t3, t3_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(t3);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$2.name,
+    		type: "if",
+    		source: "(16:6) {#if messageClass === \\\"received\\\"}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     function create_fragment$3(ctx) {
     	let div1;
     	let img;
@@ -4628,10 +4712,16 @@ var app = (function () {
     	let t0;
     	let div0;
     	let p;
-    	let t1_value = /*message*/ ctx[0].what + "";
     	let t1;
-    	let t2;
     	let time;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*messageClass*/ ctx[1] === "received") return create_if_block$2;
+    		return create_else_block$2;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
 
     	const block = {
     		c: function create() {
@@ -4640,15 +4730,15 @@ var app = (function () {
     			t0 = space();
     			div0 = element("div");
     			p = element("p");
-    			t1 = text(t1_value);
-    			t2 = space();
+    			if_block.c();
+    			t1 = space();
     			time = element("time");
     			time.textContent = `${/*ts*/ ctx[3].toLocaleTimeString()}`;
     			if (img.src !== (img_src_value = /*avatar*/ ctx[2])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "avatar");
     			add_location(img, file$3, 12, 2, 307);
     			add_location(p, file$3, 14, 4, 376);
-    			add_location(time, file$3, 16, 4, 405);
+    			add_location(time, file$3, 21, 4, 576);
     			attr_dev(div0, "class", "message-text");
     			add_location(div0, file$3, 13, 2, 344);
     			attr_dev(div1, "class", `message ${/*messageClass*/ ctx[1]}`);
@@ -4663,17 +4753,18 @@ var app = (function () {
     			append_dev(div1, t0);
     			append_dev(div1, div0);
     			append_dev(div0, p);
-    			append_dev(p, t1);
-    			append_dev(div0, t2);
+    			if_block.m(p, null);
+    			append_dev(div0, t1);
     			append_dev(div0, time);
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*message*/ 1 && t1_value !== (t1_value = /*message*/ ctx[0].what + "")) set_data_dev(t1, t1_value);
+    			if_block.p(ctx, dirty);
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div1);
+    			if_block.d();
     		}
     	};
 

@@ -14,7 +14,7 @@
   <div class="message-text">
     <p>
       {#if messageClass === "received"}
-        {message.who}: {message.what}
+      <span class="sender-name"><strong>{message.who}:</strong></span> {message.what}
       {:else}
         {message.what} 
       {/if}
