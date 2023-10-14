@@ -18,9 +18,12 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "crypto-js": "^4.1.1",
     "gun": "^0.2020.1234",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
-    "sirv-cli": "^1.0.0"
+    "simple-crypto-js": "^3.0.1",
+    "sirv-cli": "^1.0.0",
+    "tweetnacl": "^1.0.3"
   }
 }

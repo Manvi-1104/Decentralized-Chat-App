@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
   import { username, user } from './user';
   import debounce from 'lodash.debounce';
+  import SimpleCrypto from 'simple-crypto-js'; // Import SimpleCrypto library
 
   import GUN from 'gun';
   const db = GUN();
@@ -15,6 +16,10 @@
   let lastScrollTop;
   let canAutoScroll = true;
   let unreadMessages = false;
+
+  // Create an instance of SimpleCrypto with your secret key
+  const secretKey = 'sahita'; // Replace with your actual secret key
+  const simpleCrypto = new SimpleCrypto(secretKey);
 
   function autoScroll() {
     setTimeout(() => scrollBottom?.scrollIntoView({ behavior: 'auto' }), 50);
@@ -30,30 +35,26 @@
 
   onMount(() => {
     var match = {
-      // lexical queries are kind of like a limited RegEx or Glob.
       '.': {
-        // property selector
-        '>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(), // find any indexed property larger ~3 hours ago
+        '>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(),
       },
-      '-': 1, // filter in reverse
+      '-': 1,
     };
 
-    // Get Messages
     db.get('chat')
       .map(match)
       .once(async (data, id) => {
         if (data) {
-          // Key for end-to-end encryption
           const key = '#foo';
 
           var message = {
-            // transform the data
-            who: await db.user(data).get('alias'), // a user might lie who they are! So let the user system detect whose data it is.
-            what: (await SEA.decrypt(data.what, key)) + '', // force decrypt as text.
-            when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
+            who: await db.user(data).get('alias'),
+            what: simpleCrypto.decrypt(data.what), // Decrypt the message
+            when: GUN.state.is(data, 'what'),
           };
 
           if (message.what) {
+            console.log('Decrypted message:', message.what); // Add this line to check the decrypted message
             messages = [...messages.slice(-100), message].sort((a, b) => a.when - b.when);
             if (canAutoScroll) {
               autoScroll();
@@ -66,8 +67,9 @@
   });
 
   async function sendMessage() {
-    const secret = await SEA.encrypt(newMessage, '#foo');
-    const message = user.get('all').set({ what: secret });
+    const encryptedMessage = simpleCrypto.encrypt(newMessage); // Encrypt the message
+    console.log('Encrypted message:', encryptedMessage); // Add this line to check the encrypted message
+    const message = user.get('all').set({ what: encryptedMessage });
     const index = new Date().toISOString();
     db.get('chat').get(index).put(message);
     newMessage = '';
@@ -75,6 +77,7 @@
     autoScroll();
   }
 </script>
+
 
 <div class="container">
   {#if $username}
@@ -91,7 +94,6 @@
 
       <button type="submit" disabled={!newMessage}>Send</button>
     </form>
-
 
     {#if !canAutoScroll}
     <div class="scroll-button">
